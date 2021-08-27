@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Web.Mvc;
 using MyShop.Core.Models;
+using MyShop.Core.ViewModels;
 using MyShop.DataAccess.InMemory;
 
 namespace MyShop.WebUI.Controllers
@@ -11,10 +12,14 @@ namespace MyShop.WebUI.Controllers
         //Vi skal have en adgang til vores models
         ProductRepository context;
 
+        //Her skal vi bruge vores viewmodels
+        ProductCategoryRepository productCategories;
+
         //her skal jeg lave en constructor der aktivere adgangen til min models
         public ProductManagerController()
         {
             context = new ProductRepository();
+            productCategories = new ProductCategoryRepository();
         }
         
         // GET: ProductManager
@@ -32,9 +37,12 @@ namespace MyShop.WebUI.Controllers
         //den her er kun til at vise siden create
         public ActionResult Create()
         {
+            //Viewmodel 
+            ProductManagerViewModel viewModel = new ProductManagerViewModel();
             //Her skal vi have en instance til product model
-            Product product = new Product();
-            return View(product);
+            viewModel.Product = new Product();
+            viewModel.ProductCategories = productCategories.Collection();
+            return View(viewModel);
         }
 
 
@@ -72,7 +80,11 @@ namespace MyShop.WebUI.Controllers
             }
             else
             {
-                return View(product);
+                //Hente product fra viewModel
+                ProductManagerViewModel viewModel = new ProductManagerViewModel();
+                viewModel.Product = product;
+                viewModel.ProductCategories = productCategories.Collection();
+                return View(viewModel);
             }
         }
 
